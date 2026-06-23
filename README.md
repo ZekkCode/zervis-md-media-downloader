@@ -6,14 +6,17 @@ Dibuat oleh [zekkcode](https://github.com/zekkcode).
 
 ### 🖥️ Tampilan Web Control Panel (Tema Telegram)
 
-| Dashboard Utama (Light Mode) | Dashboard Utama (Dark Mode) |
-| --- | --- |
-| ![Dashboard Utama Light](assets/dashboard-utama-light.png) | ![Dashboard Utama Dark](assets/dashboard-utama-dark.png) |
+#### Dashboard Utama (Light Mode)
+![Dashboard Utama Light](assets/dashboard.png)
 
-| Panduan Penggunaan | Tentang Proyek |
-| --- | --- |
-| ![Panduan Penggunaan](assets/panduan-light.png) | ![Tentang Zervis](assets/tentang-light.png) |
+#### Dashboard Utama (Dark Mode)
+![Dashboard Utama Dark](assets/dashboard-2.png)
 
+#### Panduan Penggunaan
+![Panduan Penggunaan](assets/panduan.png)
+
+#### Tentang Proyek
+![Tentang Proyek](assets/about.png)
 
 > [!IMPORTANT]
 > **Tiga Hal Penting Sebelum Memulai:**
