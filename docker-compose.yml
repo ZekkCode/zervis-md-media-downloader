@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  worker:
+    build: .
+    image: zervis-bot:latest
+    container_name: zervis-worker
+    command: python scripts/worker.py
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./cookies:/app/cookies
+      - ./downloads:/app/downloads
+      - ./logs:/app/logs
+      # Map files to prevent Docker from creating directories if they do not exist
+      - ./scripts/cleanup_settings.json:/app/scripts/cleanup_settings.json
+      - ./scripts/topics.json:/app/scripts/topics.json
+    environment:
+      - PYTHONPATH=/app
+      - WORKER_HOST=0.0.0.0
+      - WORKER_PORT=3000
+    restart: always
+
+  bot:
+    build: .
+    image: zervis-bot:latest
+    container_name: zervis-bot
+    command: python scripts/bot.py
+    volumes:
+      - ./cookies:/app/cookies
+      - ./downloads:/app/downloads
+      - ./logs:/app/logs
+      - ./scripts/cleanup_settings.json:/app/scripts/cleanup_settings.json
+      - ./scripts/topics.json:/app/scripts/topics.json
+    environment:
+      - PYTHONPATH=/app
+    depends_on:
+      - worker
+    restart: always

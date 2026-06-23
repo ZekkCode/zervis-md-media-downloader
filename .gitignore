@@ -1,0 +1,46 @@
+# Environment & secrets
+.env
+cookies/
+*.sqlite3
+*.db
+
+# Downloads & logs
+downloads/
+logs/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+.venv-tagger/
+venv/
+*.egg
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Binary
+yt-dlp
+yt-dlp.exe
+
+# PID files
+*.pid
+*.lock
+
+# Dashboard token
+dashboard_token.tx

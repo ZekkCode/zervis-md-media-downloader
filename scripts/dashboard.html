@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zervis Bot Control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  (function() {
+    const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
+<style>
+  :root {
+    --bg: #e7ebf0;
+    --panel: #ffffff;
+    --panel-hover: #f4f6fd;
+    --panel2: #ffffff;
+    --line: #dcdfe2;
+    --line-active: #3390ec;
+    --txt: #000000;
+    --muted: #707579;
+    --accent: #3390ec;
+    --accent-hover: #2481cc;
+    --accent-bg: #e4f2fe;
+    --ok: #34c759;
+    --off: #e53935;
+    --shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+
+  [data-theme="dark"] {
+    --bg: #0e1621;
+    --panel: #17212b;
+    --panel-hover: #202b36;
+    --panel2: #17212b;
+    --line: #101921;
+    --line-active: #5288c1;
+    --txt: #f5f5f5;
+    --muted: #7f91a4;
+    --accent: #5288c1;
+    --accent-hover: #6398cf;
+    --accent-bg: #202b36;
+    --ok: #31b96e;
+    --off: #ec3942;
+    --shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--txt);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.45;
+    min-height: 100vh;
+    transition: background-color 0.15s, color 0.15s;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 800px; margin: 0 auto; padding: 32px 20px 80px; }
+  
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand .mark {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    background: var(--accent);
+    color: #ffffff;
+    letter-spacing: -.5px;
+  }
+  .brand h1 { font-size: 18px; margin: 0; font-weight: 600; letter-spacing: -0.3px; color: var(--txt); }
+  .brand p { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+  
+  .dev {
+    font-size: 13px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    padding: 6px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    background: var(--panel);
+  }
+  .dev:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+  
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 24px; }
+  
+  .stat {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+  }
+  .stat .k { font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); font-weight: 600; }
+  .stat .v { font-size: 15px; margin-top: 6px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+  
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .dot.on { background: var(--ok); }
+  .dot.off { background: var(--off); }
+  
+  section { margin-top: 24px; }
+  section > .h {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    margin-bottom: 8px;
+    padding-left: 4px;
+  }
+  
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  
+  .acct {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .acct:last-child { border-bottom: 0; }
+  .acct:hover {
+    background: var(--panel-hover);
+  }
+  .acct.drag-over {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+  }
+  
+  .acct .ico {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-bg);
+  }
+  .acct .ico svg { width: 20px; height: 20px; }
+  
+  .acct .meta { flex: 1; min-width: 0; }
+  .acct .meta .name { font-size: 15px; font-weight: 600; }
+  .acct .meta .st { font-size: 13px; color: var(--muted); margin-top: 3px; display: flex; align-items: center; gap: 6px; }
+  
+  .acct .act { display: flex; align-items: center; gap: 8px; flex: none; }
+  
+  .filebtn { position: relative; overflow: hidden; }
+  .filebtn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  
+  button, .btn {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 7px 14px;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--txt);
+    transition: background-color 0.1s, border-color 0.1s, color 0.1s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  button:hover, .btn:hover {
+    background: var(--panel-hover);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  button.solid {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+  }
+  button.solid:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+    color: #ffffff;
+  }
+  button.danger { color: var(--off); border-color: transparent; background: transparent; }
+  button.danger:hover {
+    background: rgba(236, 57, 66, 0.08);
+    border-color: var(--off);
+    color: var(--off);
+  }
+  
+  .access { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .access input {
+    flex: 1;
+    min-width: 200px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--txt);
+    padding: 8px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+  }
+  .access input:focus {
+    border-color: var(--accent);
+  }
+  .note { font-size: 13px; color: var(--muted); margin-top: 8px; }
+  
+  .opt {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .opt:last-child { border-bottom: 0; }
+  .opt .lbl { font-size: 14px; }
+  .opt .lbl small { display: block; color: var(--muted); font-size: 12px; margin-top: 3px; }
+  
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 26px;
+    transform: translateX(-50%) translateY(10px);
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--txt);
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 0.15s, transform 0.15s;
+    pointer-events: none;
+    z-index: 300;
+    box-shadow: var(--shadow);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  
+  footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  /* Collapsible Guide Styles */
+  .guide-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-top: 24px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .guide-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: var(--muted);
+    user-select: none;
+    transition: background-color .1s;
+  }
+  .guide-toggle:hover {
+    background: var(--panel-hover);
+  }
+  .guide-toggle svg {
+    width: 16px;
+    height: 16px;
+    transition: transform .2s;
+    stroke: var(--muted);
+  }
+  .guide-toggle.open svg {
+    transform: rotate(180deg);
+  }
+  .guide-content {
+    display: none;
+    padding: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--txt);
+    background: var(--panel-hover);
+  }
+  .guide-content.open {
+    display: block;
+  }
+  .guide-step {
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .guide-step:last-child {
+    margin-bottom: 0;
+  }
+  .guide-step strong {
+    color: var(--txt);
+  }
+  .guide-step a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .guide-step a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Modal Styles */
+  .modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s;
+    z-index: 100;
+    padding: 20px;
+  }
+  .modal.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .modal-content {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    transform: translateY(10px);
+    transition: transform .15s;
+  }
+  .modal.open .modal-content {
+    transform: translateY(0);
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .modal-title {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .modal-close {
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--muted);
+    background: none;
+    border: none;
+    padding: 0;
+    line-height: 1;
+  }
+  .modal-close:hover {
+    color: var(--txt);
+  }
+  .modal-body textarea {
+    width: 100%;
+    height: 140px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--txt);
+    padding: 10px;
+    font-family: monospace;
+    font-size: 13px;
+    resize: vertical;
+    outline: none;
+  }
+  .modal-body textarea:focus {
+    border-color: var(--accent);
+  }
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  /* Fullscreen drop overlay */
+  .drop-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 200;
+  }
+  .drop-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .drop-overlay-box {
+    text-align: center;
+    max-width: 440px;
+    padding: 32px;
+    background: var(--panel);
+    border: 2px dashed var(--accent);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .drop-overlay-box svg {
+    width: 48px;
+    height: 48px;
+    stroke: var(--accent);
+  }
+  .drop-overlay-box h3 {
+    font-size: 18px;
+    margin: 0;
+    font-weight: 600;
+    color: var(--txt);
+  }
+  .drop-overlay-box p {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 0;
+    line-height: 1.5;
+  }
+  .drop-overlay-box code {
+    background: var(--bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    color: var(--txt);
+  }
+  /* Tabs system */
+  .tab-content {
+    display: none;
+  }
+  .tab-content.active {
+    display: block;
+  }
+
+  /* Full-width Top Header Banner */
+  :root {
+    --banner-bg: #3390ec;
+    --banner-txt: #ffffff;
+  }
+  [data-theme="dark"] {
+    --banner-bg: #17212b;
+    --banner-txt: #f5f5f5;
+  }
+
+  .top-banner {
+    background: var(--banner-bg);
+    color: var(--banner-txt);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    transition: background-color 0.15s, color 0.15s;
+  }
+  .top-banner-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .top-banner a {
+    color: var(--banner-txt);
+    text-decoration: none;
+  }
+  .brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: -0.3px;
+    cursor: pointer;
+  }
+  .brand-logo .logo-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #3390ec;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+  }
+  [data-theme="dark"] .brand-logo .logo-avatar {
+    background: #5288c1;
+    color: #ffffff;
+  }
+  
+  .nav-tabs {
+    display: flex;
+    gap: 8px;
+    height: 100%;
+    align-items: center;
+  }
+  .nav-tab {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.1s, font-weight 0.1s;
+    color: var(--banner-txt);
+    user-select: none;
+  }
+  .nav-tab:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .nav-tab.active {
+    background: rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+  }
+  [data-theme="dark"] .nav-tab:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  [data-theme="dark"] .nav-tab.active {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .top-banner-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .top-banner-right .dev {
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.08);
+    font-size: 13px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: background-color 0.1s, border-color 0.1s;
+  }
+  .top-banner-right .dev:hover {
+    background: rgba(255,255,255,0.18);
+    border-color: #ffffff;
+    color: #ffffff;
+  }
+
+  /* Full-width Footer Banner */
+  .footer-banner {
+    background: var(--banner-bg);
+    color: var(--banner-txt);
+    padding: 24px 20px;
+    margin-top: 60px;
+    border-top: 1px solid var(--line);
+    transition: background-color 0.15s, color 0.15s;
+  }
+  .footer-banner-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 13px;
+  }
+  .footer-banner a {
+    color: var(--banner-txt);
+    text-decoration: underline;
+  }
+  .footer-banner a:hover {
+    opacity: 0.9;
+  }
+
+  @media (max-width: 650px) {
+    .top-banner-inner {
+      flex-direction: column;
+      height: auto;
+      padding: 12px 16px;
+      gap: 12px;
+      align-items: center;
+    }
+    .nav-tabs {
+      width: 100%;
+      justify-content: center;
+    }
+    .top-banner-right {
+      width: 100%;
+      justify-content: center;
+    }
+    .footer-banner-inner {
+      flex-direction: column;
+      text-align: center;
+      gap: 10px;
+    }
+  }
+</style>
+</head>
+<body>
+<div id="header-root"></div>
+<div class="wrap" id="app"></div>
+<div id="footer-root"></div>
+<div id="toast" class="toast"></div>
+
+<!-- Cookie Paste Modal -->
+<div id="cookieModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Paste Cookie</div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:12px;color:var(--muted);margin:0 0 10px 0;">Tempel teks cookie hasil ekspor Netscape atau raw header di bawah ini:</p>
+      <textarea id="cookieText" placeholder="# Netscape HTTP Cookie File... atau format cookie_name=value; ..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button onclick="closeModal()">Batal</button>
+      <button class="solid" id="modalSaveBtn">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Global Drag-and-Drop Overlay -->
+<div id="dropOverlay" class="drop-overlay">
+  <div class="drop-overlay-box">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+      <polyline points="17 8 12 3 7 8"></polyline>
+      <line x1="12" y1="3" x2="12" y2="15"></line>
+    </svg>
+    <h3>Lepaskan File Cookie (.txt)</h3>
+    <p>Sistem akan otomatis mendeteksi platform berdasarkan nama file (misal: <code>x.txt</code>, <code>instagram.txt</code>, <code>cookies-youtube.txt</code>) lalu menyimpannya.</p>
+  </div>
+</div>
+
+<script src="/dashboard.js"></script>
+</body>
+</html>
