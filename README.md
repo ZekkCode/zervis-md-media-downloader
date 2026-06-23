@@ -4,20 +4,6 @@ Bot Telegram buat auto-download media dari X/Twitter, TikTok, YouTube, Facebook,
 
 Dibuat oleh [zekkcode](https://github.com/zekkcode).
 
-### 🖥️ Tampilan Web Control Panel (Tema Telegram)
-
-#### Dashboard Utama (Light Mode)
-![Dashboard Utama Light](assets/dashboard.png)
-
-#### Dashboard Utama (Dark Mode)
-![Dashboard Utama Dark](assets/dashboard-2.png)
-
-#### Panduan Penggunaan
-![Panduan Penggunaan](assets/panduan.png)
-
-#### Tentang Proyek
-![Tentang Proyek](assets/about.png)
-
 > [!IMPORTANT]
 > **Tiga Hal Penting Sebelum Memulai:**
 > 1. **Harus Membuat Bot Telegram:** Anda wajib membuat bot Telegram terlebih dahulu via [@BotFather](https://t.me/BotFather) untuk mendapatkan `TELEGRAM_BOT_TOKEN`. Tanpa token ini, program tidak akan berfungsi.
@@ -28,6 +14,7 @@ Dibuat oleh [zekkcode](https://github.com/zekkcode).
 
 ## Daftar Isi
 
+- [Tampilan UI Frontend](#tampilan-ui-frontend)
 - [Arsitektur Singkat](#arsitektur-singkat)
 - [Cara Menyalakan](#cara-menyalakan)
 - [Command Bot di Telegram](#command-bot-di-telegram)
@@ -35,6 +22,22 @@ Dibuat oleh [zekkcode](https://github.com/zekkcode).
 - [Web Control Panel](#web-control-panel)
 - [Konfigurasi (.env)](#konfigurasi-env)
 - [Troubleshooting](#troubleshooting)
+
+---
+
+## Tampilan UI Frontend
+
+#### Dashboard Utama (Light Mode)
+![Dashboard Utama Light](assets/dashboard-2.png)
+
+#### Dashboard Utama (Dark Mode)
+![Dashboard Utama Dark](assets/dashboard.png)
+
+#### Panduan Penggunaan
+![Panduan Penggunaan](assets/panduan.png)
+
+#### Tentang Proyek
+![Tentang Proyek](assets/about.png)
 
 ---
 
