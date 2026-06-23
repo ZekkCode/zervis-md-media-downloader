@@ -4,6 +4,17 @@ Bot Telegram buat auto-download media dari X/Twitter, TikTok, YouTube, Facebook,
 
 Dibuat oleh [zekkcode](https://github.com/zekkcode).
 
+### 🖥️ Tampilan Web Control Panel (Tema Telegram)
+
+| Dashboard Utama (Light Mode) | Dashboard Utama (Dark Mode) |
+| --- | --- |
+| ![Dashboard Utama Light](assets/dashboard-utama-light.png) | ![Dashboard Utama Dark](assets/dashboard-utama-dark.png) |
+
+| Panduan Penggunaan | Tentang Proyek |
+| --- | --- |
+| ![Panduan Penggunaan](assets/panduan-light.png) | ![Tentang Zervis](assets/tentang-light.png) |
+
+
 > [!IMPORTANT]
 > **Tiga Hal Penting Sebelum Memulai:**
 > 1. **Harus Membuat Bot Telegram:** Anda wajib membuat bot Telegram terlebih dahulu via [@BotFather](https://t.me/BotFather) untuk mendapatkan `TELEGRAM_BOT_TOKEN`. Tanpa token ini, program tidak akan berfungsi.
@@ -249,7 +260,7 @@ Kalau dikosongin / dihapus dari `.env`, dashboard kebuka tanpa autentikasi.
   *   **Drag & Drop File**: Taruh file cookie `.txt` ke platform terkait, atau jatuhkan ke mana saja pada dashboard (sistem akan otomatis mendeteksi platform berdasarkan nama file).
   *   **One-Click Paste Clipboard**: Cukup salin teks cookie Anda ke clipboard, lalu klik tombol *Paste Clipboard* untuk menyimpannya secara instan.
   *   **Paste Text (Manual Input)**: Tempel teks cookie secara manual lewat modal dialog jika Clipboard API tidak didukung.
-- **Desain Premium**: Tampilan gelap (dark mode) dengan glassmorphism modern, font *Outfit*, micro-animations, dan panel pemantau status.
+- **Desain Bertema Telegram**: Tampilan premium yang bersih, flat, dan modern yang dirancang menyerupai antarmuka Telegram (mendukung tema Light Mode dan Dark Night Mode Telegram, persisten via `localStorage`).
 - **Pengaturan**: status token Telegram, toggle auto-refresh.
 
 ### Edit tampilan dashboard
